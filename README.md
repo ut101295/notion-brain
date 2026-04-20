@@ -39,6 +39,18 @@ A Chrome extension that captures notes and to-dos from any webpage and stores th
 5. Click `Load unpacked` and select this project root.
 6. Open any page and click the extension icon.
 
+## Demo
+
+- Video: [https://youtu.be/kpVwF9gMHN8](https://youtu.be/kpVwF9gMHN8)
+
+## External APIs
+
+- `Notion API` - create notes/todos and structured blocks in Notion.
+- `LanguageTool API` - powers the `Polish` action for grammar/style fixes.
+- `Microlink API` - powers the `Enrich` action for page metadata.
+- `0x0.st` - primary screenshot upload host.
+- `catbox.moe` - fallback screenshot upload host.
+
 ## Security Note
 
 This is intentionally backendless for a pet project. Your Notion token is present in the extension bundle at runtime, so avoid using production or shared workspace secrets.

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Notion Brain",
+  "version": "1.0.0",
+  "description": "Floating Notion Notes & To-Do Capture",
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": ["https://api.notion.com/*", "<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["config.js", "styles.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Notion Brain"
+  }
+}

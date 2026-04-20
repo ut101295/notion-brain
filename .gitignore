@@ -1,0 +1,11 @@
+# Local extension secrets (developer-specific)
+config.js
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log

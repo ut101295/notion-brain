@@ -2,39 +2,54 @@
 
 ## Runtime Components
 
-- `content.js`
-  - renders floating panel in Shadow DOM
-  - handles quick actions, templates, snippets, shortcuts
-  - sends save/polish/enrich requests to background worker
-  - hides UI during screenshot capture when requested by background worker
+**`content.js`** — injected into every page as a Shadow DOM floating panel
+- Handles UI, keyboard shortcuts, quick actions, pinned snippets
+- Pre-fills textarea from selected text on panel open
+- Suppresses itself during screenshot capture
+- Sends messages to `background.js` and receives progress updates
 
-- `background.js`
-  - processes all save requests
-  - writes structured blocks/pages to Notion API
-  - handles duplicate guard (`chrome.storage.local`)
-  - calls third-party APIs:
-    - LanguageTool (`Polish`)
-    - Microlink (`Enrich`)
-    - screenshot upload (`0x0`, fallback `catbox`)
+**`background.js`** — MV3 service worker, handles all network calls
+- Duplicate fingerprint guard (IndexedDB)
+- Screenshot capture → optimize → Notion file upload
+- Vision extraction with soft deadline (`Promise.race`)
+- AI formatter with retry and fallback model support
+- Notion block builder (per action type, with emoji callouts, bookmark sources, to-do blocks)
+- Offline save queue — failed writes stored in `chrome.storage.local` and retried
+- Polish (LanguageTool) and Enrich (Microlink) handlers
+- Optional debug log persistence to IndexedDB
 
-- `styles.js`
-  - visual system for compact panel + expandable advanced options
+**`styles.js`** — exports `getStyles()` for the Shadow DOM `<style>` tag
 
-- `config.js`
-  - local constants for Notion auth and parent routing
+**`config.js`** — local secrets, gitignored; `config.example.js` is the committed template
+
+**`debug.html` / `debug-ui.js`** — standalone extension page for viewing and clearing debug logs
+
+## Save Pipeline
+
+```
+User submits
+  → duplicate fingerprint check
+  → screenshot capture + Notion file upload  (if requested)
+  → vision extraction with soft deadline      (non-blocking)
+  → AI formatter with retry/fallback          (always attempted)
+  → Notion block builder
+  → Notion API write (page or database)
+  → on failure: enqueue for retry
+```
+
+All failures (screenshot, vision, AI) are non-blocking — the save always proceeds.
 
 ## Message Types
 
-- `NOTION_BRAIN_SAVE`
-- `NOTION_BRAIN_POLISH`
-- `NOTION_BRAIN_ENRICH`
-- `NOTION_BRAIN_TOGGLE`
-- `NOTION_BRAIN_SCREENSHOT_VISIBILITY`
-
-## Save Pipeline Summary
-
-1. Content script collects input and options.
-2. Background script checks duplicate fingerprint.
-3. Optional screenshot capture/upload runs.
-4. Notion payload is generated based on mode + parent type.
-5. Save response includes screenshot diagnostics for UI status.
+| Message | Direction | Description |
+|---|---|---|
+| `NOTION_BRAIN_TOGGLE` | background → content | Show/hide panel |
+| `NOTION_BRAIN_SCREENSHOT_VISIBILITY` | background → content | Suppress panel for screenshot |
+| `NOTION_BRAIN_PROGRESS` | background → content | Pipeline stage label updates |
+| `NOTION_BRAIN_SAVE` | content → background | Full save request |
+| `NOTION_BRAIN_PREVIEW` | content → background | Run AI formatter only, return preview |
+| `NOTION_BRAIN_POLISH` | content → background | LanguageTool polish |
+| `NOTION_BRAIN_ENRICH` | content → background | Microlink metadata fetch |
+| `GET_DEBUG_LOGS` | content/debug → background | Retrieve stored log entries |
+| `CLEAR_DEBUG_LOGS` | content/debug → background | Wipe log store |
+| `GET_QUEUE_STATUS` | content → background | Return count of queued saves |

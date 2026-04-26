@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notion Brain Debug Console</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #1e1e1e;
+        color: #e0e0e0;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #fff;
+        margin-top: 0;
+      }
+      .controls {
+        margin-bottom: 20px;
+      }
+      button {
+        background: #0e639c;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #1177bb;
+      }
+      .logs-container {
+        background: #252526;
+        border: 1px solid #3e3e42;
+        border-radius: 4px;
+        overflow: hidden;
+        max-height: 600px;
+        display: flex;
+        flex-direction: column;
+      }
+      .log-header {
+        background: #2d2d30;
+        padding: 10px 15px;
+        border-bottom: 1px solid #3e3e42;
+        font-weight: 600;
+        font-size: 12px;
+        color: #bbb;
+      }
+      .log-entries {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+      }
+      .log-entry {
+        padding: 6px;
+        margin-bottom: 4px;
+        border-left: 3px solid #666;
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .log-entry.warn {
+        border-left-color: #ce9178;
+        background: rgba(206, 145, 120, 0.1);
+      }
+      .log-entry.log {
+        border-left-color: #6a9955;
+        background: rgba(106, 153, 85, 0.1);
+      }
+      .log-time {
+        color: #858585;
+        margin-right: 8px;
+      }
+      .log-level {
+        font-weight: 600;
+        margin-right: 8px;
+        min-width: 40px;
+        display: inline-block;
+      }
+      .log-entry.warn .log-level {
+        color: #ce9178;
+      }
+      .log-entry.log .log-level {
+        color: #6a9955;
+      }
+      .log-event {
+        color: #9cdcfe;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .log-details {
+        color: #bbb;
+        margin-left: 100px;
+      }
+      .status {
+        padding: 10px;
+        background: #2d2d30;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-size: 13px;
+      }
+      .status.success {
+        background: rgba(106, 153, 85, 0.2);
+        color: #6a9955;
+      }
+      .status.error {
+        background: rgba(206, 145, 120, 0.2);
+        color: #ce9178;
+      }
+      .status.loading {
+        background: rgba(156, 220, 254, 0.2);
+        color: #9cdcfe;
+      }
+      input[type="number"] {
+        background: #3e3e42;
+        color: #e0e0e0;
+        border: 1px solid #555;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧠 Notion Brain Debug Console</h1>
+
+      <div class="controls">
+        <label>
+          Limit:
+          <input type="number" id="logLimit" value="100" min="10" max="1000" />
+        </label>
+        <button id="btn-refresh">🔄 Refresh Logs</button>
+        <button id="btn-clear">🗑️ Clear All</button>
+        <button id="btn-copy">📋 Copy to Clipboard</button>
+      </div>
+
+      <div id="status" class="status loading">Loading logs...</div>
+
+      <div class="logs-container">
+        <div class="log-header">Timestamp | Level | Event | Details</div>
+        <div class="log-entries" id="logEntries">
+          <div class="log-entry">No logs yet...</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="debug-ui.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-window.getStyles = function getStyles() {
+globalThis.getStyles = function getStyles() {
   return `
     :host {
       --nb-bg-top: #f9fcff;
@@ -61,6 +61,60 @@ window.getStyles = function getStyles() {
       line-height: 1;
       letter-spacing: 0.2px;
       white-space: nowrap;
+    }
+
+    #nb-title-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .nb-ai-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+      border: 1px solid rgba(18, 48, 86, 0.22);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+
+    .nb-ai-badge::after {
+      content: "";
+      position: absolute;
+      top: -30%;
+      left: -60%;
+      width: 44%;
+      height: 160%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+      animation: nb-shimmer 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .nb-ai-on {
+      background: linear-gradient(135deg, #0f76f8, #13b6d8);
+      color: #ffffff;
+      border-color: rgba(13, 92, 190, 0.6);
+    }
+
+    .nb-ai-off {
+      background: linear-gradient(135deg, #eef2f7, #dce4ee);
+      color: #607387;
+      border-color: rgba(116, 138, 166, 0.45);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .nb-ai-off::after {
+      display: none;
     }
 
     #nb-controls {
@@ -198,6 +252,9 @@ window.getStyles = function getStyles() {
       flex-direction: column;
       gap: 8px;
       margin-top: 2px;
+      max-height: calc(100vh - 280px);
+      overflow-y: auto;
+      scrollbar-width: thin;
     }
 
     .nb-advanced-hidden {
@@ -299,6 +356,15 @@ window.getStyles = function getStyles() {
       }
     }
 
+    @keyframes nb-shimmer {
+      0% {
+        left: -60%;
+      }
+      100% {
+        left: 130%;
+      }
+    }
+
     @media (max-width: 520px) {
       #nb-root {
         top: 12px;
@@ -316,6 +382,101 @@ window.getStyles = function getStyles() {
       #nb-opacity {
         width: 130px;
       }
+    }
+
+    .nb-save-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .nb-preview-btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .nb-save-row #nb-submit {
+      flex: 1 1 auto;
+      margin-top: 0;
+    }
+
+    .nb-preview-box {
+      border: 1px solid rgba(20, 111, 242, 0.28);
+      border-radius: 12px;
+      background: rgba(240, 247, 255, 0.92);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--nb-text);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nb-preview-box strong {
+      font-size: 13px;
+      color: #0f3d7a;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .nb-preview-block {
+      display: block;
+      color: #2c4a6e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nb-preview-more {
+      display: block;
+      color: var(--nb-muted);
+      font-style: italic;
+      font-size: 11px;
+    }
+
+    .nb-queue-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(255, 193, 7, 0.2);
+      border: 1px solid rgba(255, 193, 7, 0.55);
+      color: #7a5800;
+      white-space: nowrap;
+    }
+
+    .nb-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(0);
+      background: rgba(15, 28, 50, 0.92);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      z-index: 2147483647;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .nb-toast-hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(12px);
+      pointer-events: none;
+    }
+
+    .nb-toast-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   `;
 };
